@@ -6,6 +6,7 @@ It also supports sorting and filtering tasks based on various criteria.
 
 ## Team members
 - Muaaz Ahmed Shahzad
+- Mohamad Badr H.Ali
 
 ## Prerequisites
 
