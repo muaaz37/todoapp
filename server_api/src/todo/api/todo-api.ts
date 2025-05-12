@@ -12,7 +12,7 @@ import {TodoStatusParser} from "../parser/todo-status-parser.js";
 const INVALID_TODO_ID_MESSAGE = 'Todo ID must be a hex encoded UUID v4 string';
 const TODO_NOT_FOUND_MESSAGE = 'Todo not found';
 
-const memoryHog = []; // Array for memory hogging
+const memoryHog = []; // Array to store memory allocations
 
 /**
  * A class that handles the API for managing to-do items.
@@ -37,17 +37,17 @@ export class TodoApi {
     app.patch('/todos/:id/status', this.updateTodoStatus);
     app.delete('/todos/:id', this.deleteTodo);
 
-    // Eine neue Route für den Stress-Test hinzufügen
+    // Add a route for memory stress
     app.get('/stress-memory', (req, res) => {
       try {
-        for (let i = 0; i < 100000; i++) {
-          memoryHog.push(new Array(50000).fill('x'));
-        }
-        res.send('Speicher wird ausgelastet!');
+        const allocation = new Array(20 * 1024 * 1024).fill('X'); // Allocate ~40 MB of memory
+        memoryHog.push(allocation); // Accumulate memory in global array
+        res.send('Memory allocated. Current size: ' + memoryHog.length * 40 + ' MB');
       } catch (error) {
-        res.status(500).send('Speichergrenze erreicht oder Fehler aufgetreten!');
+        res.status(500).send('Memory limit reached or an error occurred!');
       }
     });
+
   }
 
   private getAllTodos = RequestHandler.handle(async (req) => {
