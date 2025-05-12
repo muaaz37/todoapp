@@ -1,7 +1,7 @@
 # Prozess- und Speicherverwaltung in Betriebssystemen
 
 ## Aufgabe 1: Prozesse und Prozesszustände
-
+#### Fragestellung 1: Wie werden Prozesse im Betriebssystem verwaltet? Welche Informationen werden in einem Prozesskontrollblock (PCB) gespeichert und welche Rolle spielt dieser bei der Prozessverwaltung?
 ---
 
 ### 1. Prozesse: Verwaltung und Rolle des Prozesskontrollblocks (PCB)
@@ -21,6 +21,9 @@ Das **Betriebssystem** (OS) verwaltet alle Prozesse, indem es:
 
 Dies erfordert die Speicherung und Verwaltung vieler Zustände und Daten – genau das übernimmt der sogenannte **Prozesskontrollblock (PCB)**.
 
+### Selbstreflexion
+Die KI generierte Definition von Prozess ist erstemal ausreichend aber die Verwaltung von Prozessen durch das Betriebssystem ist sehr oberflächlich. Die fachliche Tiefe fehlt und es wurde nicht genauer erklärt wie das Betriebssystem das tatsächlich macht. Es wurde auch nicht erklärt was Scheduling ist usw...
+
 #### Was ist ein PCB?
 Der **Prozesskontrollblock** ist eine Datenstruktur, die das Betriebssystem für jeden aktiven Prozess anlegt. Er enthält alle Informationen, die notwendig sind, um den Prozess zu verwalten und später ggf. wieder aufzunehmen.
 
@@ -36,11 +39,13 @@ Ein PCB beinhaltet typischerweise folgende Felder:
 | **Scheduling-Informationen** | Priorität, Zeitscheibenverbrauch, Warteschlangenstatus |
 | **I/O-Status**        | Welche Geräte der Prozess nutzt, offener Dateizugriff etc. |
 | **Benutzerinformationen** | z. B. Eigentümer, Berechtigungen |
-
+### Selbstreflexion
+Dieser Aufgabenteil ist mehr als ausreichend von KI erklärt worden. Es fehlen aber noch paar Einträge im Vergleich zur Vorlesung wie z.B. die Ausführungszeit, die Anzahl der geöffneten Dateien, ID des Elternprozess.
 #### Rolle des PCB im Prozessmanagement
 Wenn das Betriebssystem einen **Kontextwechsel (Context Switch)** durchführt – also von einem laufenden Prozess zu einem anderen wechselt – sichert es den aktuellen Zustand des Prozesses im PCB. Später kann der Prozess exakt an dieser Stelle fortgesetzt werden.
-
-##### Beispiel:
+### Selbstreflexion
+Die KI hat die Rolle des PCB im Prozessmanagement sehr gut erklärt. Es fehlt immernoch das Schedulingverfahren und wurde nicht erwähnt.
+#### Beispiel:
 Wenn Prozess A unterbrochen wird, weil seine Zeitscheibe abläuft, speichert das OS seinen Status im PCB von A. Anschließend lädt es den PCB von Prozess B und stellt dessen Kontext her. So kann Multitasking effizient umgesetzt werden.
 
 #### Reflexion:
@@ -49,7 +54,7 @@ Die PCB ist ein zentrales Element in der Prozessverwaltung. Sie macht Prozesse �
 ---
 
 ### 2. Prozesszustände und Zustandsübergänge
-
+### Frage 2: Welche typischen Zustände kann ein Prozess in einem Betriebssystem durchlaufen? Beschreiben Sie die Zustände und die Übergänge zwischen ihnen.
 #### Typische Prozesszustände
 Ein Prozess durchläuft verschiedene **Zustände**, die durch das Betriebssystem verwaltet werden. Die wichtigsten Zustände sind:
 
@@ -72,6 +77,9 @@ Ein Prozess durchläuft verschiedene **Zustände**, die durch das Betriebssystem
 - **Suspended**: Ein gestoppter Prozess, der aus dem Hauptspeicher ausgelagert wurde.
 - **Zombie**: Ein beendeter Prozess, dessen Rückgabewert noch nicht vom übergeordneten Prozess abgeholt wurde.
 
+### Selbstreflexion
+Ein wichtiger Aspekt bei der Betrachtung der Prozesszustand Beendet ist, dass die Daten nach Beendigung noch nicht freigegeben werden, z.B. weil noch ein anderer Prozess das
+Ergebnis auslesen muss. KI hat das aber nicht erwähnt und falsch erklärt.
 #### Übergänge zwischen Zuständen:
 
 ```text
@@ -90,14 +98,18 @@ Ein Prozess durchläuft verschiedene **Zustände**, die durch das Betriebssystem
                              +------------+
 
 ```
-## Aufgabe 3: Prozess-Scheduling – Präemptiv vs. Nicht-Präemptiv
+### Selbstreflexion
+KI hat das Bild erstellt wie ein Prozess bearbeitet wird aber es fehlt noch ein Zustand , der die blockierte Prozesse darstellt.
 
+## Aufgabe 3: Prozess-Scheduling – Präemptiv vs. Nicht-Präemptiv
+### Frage 3: Welche Unterschiede bestehen zwischen präemptivem und nicht-präemptivem Scheduling? Welche Vor- und Nachteile haben die beiden Ansätze?
 ### Was ist Prozess-Scheduling?
 Prozess-Scheduling bezeichnet den Mechanismus, mit dem das Betriebssystem entscheidet, **welcher Prozess als Nächstes auf der CPU ausgeführt wird**. Dies ist notwendig, da auf einem Prozessor meist mehr Prozesse gleichzeitig laufen wollen, als Kerne vorhanden sind.
 
 ### Präemptives vs. Nicht-Präemptives Scheduling
-
-#### Präemptives Scheduling
+#### Scheduling
+entscheidet welche Prozesse (oder Threads) zu welchem Zeitpunkt und für welche Dauer CPU- oder andere Ressourcen erhalten damit die Systemressourcen effizient genutzt werden können.
+#### Präemptives (verdrängendes) Scheduling
 Beim **präemptiven Scheduling** kann das Betriebssystem einen laufenden Prozess **unterbrechen**, um einem anderen Prozess die CPU zuzuweisen. Dies geschieht beispielsweise bei Ablauf einer Zeitscheibe (Time Slice).
 
 - **Beispiel**: Round-Robin oder Multilevel-Queue-Scheduling.
@@ -112,7 +124,9 @@ Beim **präemptiven Scheduling** kann das Betriebssystem einen laufenden Prozess
 - Kann bei häufiger Unterbrechung zu Performanceverlust führen.
 - Schwieriger vorhersehbar für zeitkritische Systeme.
 
-#### Nicht-Präemptives Scheduling
+### Selbstreflexion: 
+KI hat die Vor- und Nachteile von präemptivem Scheduling ausführlich beschrieben und meine Erwartungen übertroffen.
+#### Nicht-Präemptives (Nicht-verdrängendes) Scheduling 
 Beim **nicht-präemptiven Scheduling** bleibt ein Prozess so lange auf der CPU, bis er **freiwillig** abgibt – z. B. durch Beenden oder Warten auf I/O.
 
 - **Beispiel**: First-Come-First-Serve (FCFS), Shortest Job First (SJF).
@@ -133,12 +147,14 @@ In modernen Betriebssystemen dominiert das präemptive Scheduling, weil es dynam
 ---
 
 ## Aufgabe 4: Virtueller Speicher
-
+### Frage 4: Was ist virtueller Speicher und wie funktioniert er? Welche Vorteile bietet er im Vergleich zu rein physischem Speicher?
 ### Was ist virtueller Speicher?
 **Virtueller Speicher** ist eine Technik, bei der das Betriebssystem jedem Prozess **den Eindruck vermittelt, er habe den gesamten Speicher für sich allein**, obwohl in Wirklichkeit viele Prozesse den gleichen physischen RAM nutzen.
 
 Dabei wird der **logische Adressraum** (virtuelle Adressen) vom **physischen Adressraum** (RAM) getrennt. Eine sogenannte **Speicherverwaltungseinheit (MMU)** in der Hardware übersetzt virtuelle Adressen zu physischen Adressen.
 
+### Selbstreflexion
+Die Erklärung des virtuellen Speichers hat geholfen, um das Thema zu verstehen aber es wurde nicht näher drauf eingegangen, was ein logische Adressraum ist. Zusätzliche Recherche ist notwendig.
 ### Wie funktioniert virtueller Speicher?
 
 1. Der Speicher wird in gleich große Blöcke unterteilt:
@@ -165,14 +181,14 @@ Dabei wird der **logische Adressraum** (virtuelle Adressen) vom **physischen Adr
 - **Performance-Einbußen** durch Page-Faults, vor allem wenn viele Seiten ausgelagert sind.
 - **Komplexität** in der Speicherverwaltung und MMU-Steuerung.
 - **Thrashing**: Wenn zu viele Page-Faults auftreten, verbringt das System mehr Zeit mit Laden/Schreiben als mit echter Arbeit.
-
+### Reflexion
+Sehr ausführliche Erklärung, die alle wichtigen Aspekte des virtuellen Speichers abdeckt.
 ## Aufgabe 5: Paging – Speicherverwaltung mit Seiten und Seitenrahmen
-
+### Frage 5: Wie funktioniert Paging in modernen Betriebssystemen? Welche Rolle spielen Seitenrahmen (Page Frames) und Seitentabellen (Page Tables)?
 ### Was ist Paging?
 **Paging** ist eine Technik der **virtuellen Speicherverwaltung**, bei der der Adressraum eines Prozesses in **gleich große Blöcke** (sogenannte **Seiten**, engl. *Pages*) unterteilt wird. Gleichzeitig wird auch der **physische Speicher** in gleich große Blöcke, sogenannte **Seitenrahmen** (*Page Frames*), aufgeteilt.
 
 ### Wie funktioniert Paging?
-
 1. **Virtueller Speicher** eines Prozesses wird in Seiten aufgeteilt (z. B. 4 KB groß).
 2. **Physischer RAM** ist in gleich große Page Frames unterteilt.
 3. Eine **Seitentabelle (Page Table)** wird für jeden Prozess geführt. Sie enthält die Zuordnung:
@@ -204,12 +220,12 @@ Sie enthalten für jede virtuelle Seite:
 - Performance-Verlust durch **mehrfache Speicherzugriffe** (z. B. beim Nachladen von Seiten).
 
 #### Reflexion
-Paging bietet eine effiziente und sichere Methode zur Speicherverwaltung. Moderne Betriebssysteme nutzen oft **mehrstufige Seitentabellen** oder **invertierte Page Tables**, um große Adressräume (z. B. bei 64-Bit-Systemen) effizient verwalten zu können.
+Die Antworten sind ausführlich aber zusätzliche Recherche ist notwendig, um die Konzepte zu verstehen. Manche Fachbegriffe sind nicht bekannt.
 
 ---
 
 ## Aufgabe 6: Speicherfragmentierung
-
+### Frage 6: Was ist Speicherfragmentierung? Welche Arten von Fragmentierung gibt es und wie können diese reduziert oder vermieden werden?
 ### Was ist Speicherfragmentierung?
 **Speicherfragmentierung** bezeichnet die ineffiziente Nutzung des Hauptspeichers, bei der freier Speicher zwar vorhanden ist, aber nicht zusammenhängend genug, um größere Speicheranforderungen zu erfüllen.
 
@@ -235,4 +251,6 @@ Es gibt **zwei Hauptarten**:
 - **Buddy-System**: Speicher wird in Blöcke nach Zweierpotenzen geteilt, um Flexibilität zu erhöhen.
 
 ### Reflexion
-Speicherfragmentierung ist ein zentrales Problem der Speicherverwaltung. Moderne Systeme versuchen, beide Arten durch Techniken wie Paging, Heap-Optimierung oder Garbage Collection in Hochsprachen zu minimieren. Dennoch bleibt es eine Herausforderung bei der effizienten Ressourcennutzung.
+Richtig erklärt, keine Widersprüche entdeckt, aber die Antworten hätten noch ausführlicher sein können.
+
+#### Insgesamt lässt sich sagen, dass KI bei der Lösung von Fragen sehr hilfreich war , aber die Antworten hätten noch an manchen Stellen ausführlicher sein können. Qualität von Antworten war auch ausreichend. Es führt zur Schlussfolgerung, dass KI öfters auch nicht 100 Prozent richtige Antworten liefert.
