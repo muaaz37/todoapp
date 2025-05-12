@@ -9,6 +9,9 @@ import {ValidationError} from "./util/parser/validation-error.js";
 import {Respond} from "./util/api/request-handler.js";
 import {HttpError} from "./util/error/http/http-error.js";
 
+// Changes
+import { fileURLToPath } from 'url';
+
 /**
  * Configuration for the to-do server.
  */
@@ -71,12 +74,15 @@ export class TodoServer {
       const app = express();
       app.use(express.json());
 
+      // Get the directory name of the current module
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
       // serve client files
-      app.use(express.static(path.join(import.meta.dirname, '..', '..', 'client_app/build')));
+      app.use(express.static(path.join(__dirname, '..', '..', 'client_app/build')));
 
       app.use(cors(
         {
-          origin: `http://${config.host}:${config.port}`, // TODO: configure cors for api if served by another domain or port!
+          origin: `http://${config.host}:${config.port}`, // TODO: Konfiguriere CORS, falls die API von einer anderen Domain oder einem anderen Port bereitgestellt wird!
           methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
           allowedHeaders: ['Content-Type'],
         }
