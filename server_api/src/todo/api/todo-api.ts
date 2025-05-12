@@ -11,7 +11,8 @@ import {TodoStatusParser} from "../parser/todo-status-parser.js";
 
 const INVALID_TODO_ID_MESSAGE = 'Todo ID must be a hex encoded UUID v4 string';
 const TODO_NOT_FOUND_MESSAGE = 'Todo not found';
-const memoryHog = [];
+
+const memoryHog = []; // Array for memory hogging
 
 /**
  * A class that handles the API for managing to-do items.
