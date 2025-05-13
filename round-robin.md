@@ -40,6 +40,11 @@ Durchlaufzeit von P3 = 25 - 4 = 21*ms*
 
 Durchlaufzeit von P4 = 22 - 6 = 16*ms*
 
+
+**Durchschnittliche Durchlaufzeit**:
+
+(19*ms* + 8*ms* + 21*ms* + 16*ms*) / 4 = 64*ms* / 4 = 16*ms*
+
 ### Wartezeit
 ___
 Für jeden Prozess \( P_i \) gilt:
