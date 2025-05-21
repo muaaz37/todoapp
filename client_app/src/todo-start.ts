@@ -1,3 +1,7 @@
+// Diese Datei ist dafür da, die UI mit der Logik zu verbinden bedeutet, dass sie die
+// UI-Elemente mit den entsprechenden Funktionen verbindet. zum Beispeil erstellung einer
+// Insatnz von message Manger um fehlern abzufangen
+// Benutzerinteraktionen (z. B. Erstellen, Bearbeiten, Löschen von To-Dos) regeln
 import {TodoTableManager} from "./ui/todo-table-manager.js";
 import {TodoService} from "./service/todo-service.js";
 import {MessageManager} from "./ui/message-manager.js";

@@ -6,7 +6,7 @@ WORKDIR /app
 # ----- Server - Installiere Abhängigkeiten und baue den Server
 COPY server_api/package*.json server_api/
 WORKDIR /app/server_api
-RUN npm install --omit=dev
+RUN npm install
 COPY server_api/ .
 RUN npm run build
 
@@ -14,7 +14,7 @@ RUN npm run build
 WORKDIR /app
 COPY client_app/package*.json client_app/
 WORKDIR /app/client_app
-RUN npm install --omit=dev
+RUN npm install
 COPY client_app/ .
 RUN npm run build
 

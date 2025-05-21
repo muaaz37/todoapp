@@ -8,8 +8,6 @@ import {TodoApi} from "./todo/api/todo-api.js";
 import {ValidationError} from "./util/parser/validation-error.js";
 import {Respond} from "./util/api/request-handler.js";
 import {HttpError} from "./util/error/http/http-error.js";
-
-// Changes
 import { fileURLToPath } from 'url';
 
 /**

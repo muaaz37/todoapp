@@ -50,7 +50,6 @@ This will launch the application on `http://localhost:8080` by default.
 ## NPM Scripts
 The following NPM scripts are available:
 
-
 Create a production-ready build for both client and server:
 ```bash
 npm run build:prod

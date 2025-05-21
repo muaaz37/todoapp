@@ -1,3 +1,7 @@
+/**
+ * Kümmert sich um die Todo-Logik alle CRUD Operationen werden hier implementiert und sie kümmert sich
+ * dass die Datenbank richtig angesprochen wird. Sie ist die Schnittstelle zwischen der API und der DB.
+ */
 import { UUIDGenerator } from "../../util/identity/uuid-generator.js";
 import { UpdateTodo } from "../dto/update-todo.js";
 import { Todo, TodoStatus} from "../model/todo.js";
