@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
+  <link rel="stylesheet" href="/styles/todo.css"/>
+
+  <!-- ✅ Auth-Prüfung beim Laden -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("jwt");
+
+      if (!token) {
+        window.location.href = "/authForm.html";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8090/api/v1/auth/me", {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("jwt_type");
+          window.location.href = "/authForm.html";
+          return;
+        }
+
+        // Optional: Du kannst hier Userdaten holen, z.B.:
+        // const user = await response.json();
+        // console.log("Angemeldet als:", user.email);
+
+      } catch (error) {
+        console.error("Fehler bei der Authentifizierung:", error);
+        localStorage.removeItem("jwt");
+        window.location.href = "/authForm.html";
+      }
+    });
+  </script>
+
+  <script defer type="module" src="/js/todo-start.js"></script>
+  <title>My First To-Do App</title>
+</head>
+
+<body class="bg-light">
+<h6 class="message-container"></h6>
+<div class="container py-5">
+  <!-- Header -->
+  <div class="text-center mb-4">
+    <h1 class="display-4 text-primary">To-Do App</h1>
+    <p class="text-muted">Keep track of your tasks efficiently</p>
+  </div>
+
+  <section class="d-flex justify-content-center flex-column gap-3 align-items-center">
+    <button class="btn-new-todo btn btn-primary">Add To-Do</button>
+    <div class="todo-table-container w-100">
+      <!-- This will be filled dynamically via JavaScript -->
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "todo-client-app",
+  "description": "my first todo app",
+  "type": "module",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@types/bootstrap": "^5.2.10",
+    "bootstrap": "^5.3"
+  },
+  "devDependencies": {
+    "shx": "^0.4.0",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "shx cp -r public build && tsc --build && shx cp -r node_modules build/"
+  }
+}
