@@ -1,0 +1,23 @@
+{
+  "name": "todo-app",
+  "private": true,
+  "scripts": {
+    "install": "npm ci --prefix client_app && npm ci --prefix server_api",
+    "build": "npm run build --prefix client_app && npm run build --prefix server_api",
+    "start": "npm run start --prefix server_api",
+    "build:prod": "npm install && npm run build --prefix client_app && npm run build --prefix server_api",
+    "build:docker": "npm run build:prod && docker build --no-cache -t todo-app .",
+    "start:docker": "docker run -p 8080:8080 todo-app",
+    "firststart:compose": "npm run clean:docker && npm run build:docker && docker compose up --force-recreate",
+    "start:compose": "docker compose up --build",
+    "stop:compose": "docker compose down",
+    "clean:docker": "docker rmi --force to-do-app-todo-app || true"
+  },
+  "devDependencies": {
+    "@types/express-jwt": "^6.0.4",
+    "@types/node": "^22.15.2"
+  },
+  "dependencies": {
+    "express-jwt": "^8.5.1"
+  }
+}

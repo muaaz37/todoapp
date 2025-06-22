@@ -1,0 +1,44 @@
+services:
+  todo-app-server:
+    build:
+      context: ./server_api
+      dockerfile: Dockerfile
+    environment:
+      - HOST=0.0.0.0
+      - DB_FILE_PATH=/app/data/db.json
+    ports:
+      - "8081:8080"
+    volumes:
+      - todo-data:/app/data
+      - ./server_api/keys/:/app/keys:ro
+    restart: always
+
+  echo-service-api:
+    build:
+      context: ../echo-server
+      dockerfile: Dockerfile_Echo
+    ports:
+      - "8088:8888"
+    restart: always
+
+  todo-client-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile_Nginx
+    ports:
+      - "8080:80"
+
+  identity-provider:
+    build:
+      context: ../identity-provider-wip
+      dockerfile: Dockerfile_Auth
+    ports:
+      - "8090:8080"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - CORS_ORIGIN=http://localhost:8080,http://localhost:8081
+    restart: always
+
+volumes:
+  todo-data:
