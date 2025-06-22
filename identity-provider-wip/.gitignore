@@ -1,0 +1,22 @@
+# General Files
+node_modules
+build
+tsconfig.tsbuildinfo
+
+# Root package-lock.json
+./package-lock.json
+
+# server_api
+db.json
+
+# Windows Auxiliary Files
+Thumbs.db
+
+# MacOS Auxiliary Files
+.DS_Store
+
+# Linux Auxiliary Files
+*~
+
+# .idea Folder
+.idea/
