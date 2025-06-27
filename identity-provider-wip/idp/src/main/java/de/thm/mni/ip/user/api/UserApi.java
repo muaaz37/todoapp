@@ -82,6 +82,7 @@ public class UserApi {
 
     rc.response().setStatusCode(200).end(Json.encode(userResponses));
   }
+
   private void getUserById(RoutingContext rc) {
     try {
       var userId = UUID.fromString(rc.pathParam("id"));
