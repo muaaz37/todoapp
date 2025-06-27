@@ -1,5 +1,4 @@
 import express, {NextFunction, Request, Response} from 'express';
-import * as path from 'node:path';
 import * as http from "node:http";
 import cors from 'cors';
 import {TodoFileDb} from "./todo/store/todo-file-db.js";
@@ -12,7 +11,6 @@ import {HttpError} from "./util/error/http/http-error.js";
 import { jwtAuth } from "./auth-middleware/jwt-auth.js";
 
 
-import { fileURLToPath } from 'url';
 /**
  * Configuration for the to-do server.
  */
@@ -77,15 +75,6 @@ export class TodoServer {
 
      app.use(express.json());
 
-      // Get the directory name of the current module
-   //  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-
-
-      // serve client files: not anymore because of nginx
-    //app.use(express.static(path.join(__dirname, '..', '..', 'client_app/build')));
-
-
       // CORS configuration to allow requests from the client application
       app.use(cors({
         origin: 'http://localhost:8080',
@@ -94,10 +83,11 @@ export class TodoServer {
         credentials: true,
       }));
 
-      // 🔐 JWT-Middleware aktivieren (vor API!)
+      // JWT-Middleware aktivieren (vor API!)
       app.use("/todos", jwtAuth);
 
       // Handle JWT-Fehler gezielt
+      // @ts-ignore
       app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         if (err.name === "UnauthorizedError") {
           console.warn("JWT Error:", err.message);
@@ -107,8 +97,6 @@ export class TodoServer {
         }
       });
 
-      //const publicKeyPath
-      //const publicKey
       const todoDb = new TodoFileDb(config.dbConfig.dbFilePath);
       const todoService = new TodoService(todoDb);
       const todoApi = new TodoApi(todoService);

@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById("password") as HTMLInputElement;
 
   form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Verhindert das Standard-Formularverhalten
 
     const email = emailInput.value;
     const password = passwordInput.value;
