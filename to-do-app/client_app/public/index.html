@@ -34,10 +34,6 @@
           return;
         }
 
-        // Optional: Du kannst hier Userdaten holen, z.B.:
-        // const user = await response.json();
-        // console.log("Angemeldet als:", user.email);
-
       } catch (error) {
         console.error("Fehler bei der Authentifizierung:", error);
         localStorage.removeItem("jwt");
