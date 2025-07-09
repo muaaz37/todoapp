@@ -49,12 +49,12 @@ public final class TokenHandler {
     var expiration = new Date(System.currentTimeMillis() + timeToLiveMillis);
 
     return JWT.create()
-            .withIssuer(AppInfo.APPLICATION_NAME)
-            .withSubject(user.getId().toString())
-            .withIssuedAt(new Date())
-            .withClaim("email", user.getEmail())
-            .withExpiresAt(expiration)
-            .sign(Algorithm.RSA256(rsaKeyPair.privateKey()));
+      .withIssuer(AppInfo.APPLICATION_NAME)
+      .withSubject(user.getId().toString())
+      .withIssuedAt(new Date())
+      .withClaim("email", user.getEmail())
+      .withExpiresAt(expiration)
+      .sign(Algorithm.RSA256(rsaKeyPair.privateKey()));
   }
 
   /**
@@ -66,12 +66,12 @@ public final class TokenHandler {
    * @throws RuntimeException if the token is invalid or expired.
    */
   public UUID verify(String token) {
-    var jwt = JWT.require(Algorithm.RSA256(rsaKeyPair.publicKey()))
-            .withIssuer(AppInfo.APPLICATION_NAME)
-            .build()
-            .verify(token);
+      var jwt = JWT.require(Algorithm.RSA256(rsaKeyPair.publicKey()))
+        .withIssuer(AppInfo.APPLICATION_NAME)
+        .build()
+        .verify(token);
 
-    return UUID.fromString(jwt.getSubject());
+      return UUID.fromString(jwt.getSubject());
   }
 
   /**

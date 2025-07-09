@@ -2,13 +2,13 @@ package de.thm.mni.ip.user.db;
 
 import de.thm.mni.ip.user.model.User;
 import de.thm.mni.ip.util.security.PasswordEncoder;
+import io.vertx.core.Future;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 /**
  * Mock implementation of UserDB for testing purposes.
  * This class simulates a user database using an in-memory map.
@@ -32,49 +32,55 @@ public class UserMockDB implements UserDB {
     // Constructor
   }
 
-  public void create(User user) {
+  public Future<Void> create(User user) {
     if (user == null) {
       throw new IllegalArgumentException("User cannot be null");
     }
     users.put(user.getId(), user);
+
+    return Future.succeededFuture();
   }
 
   @Override
-  public List<User> getAll() {
-    return List.copyOf(users.values());
+  public Future<List<User>> getAll() {
+    return Future.succeededFuture(List.copyOf(users.values()));
   }
 
   @Override
-  public Optional<User> find(UUID id) {
+  public Future<Optional<User>> find(UUID id) {
     if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("ID cannot be null"));
     }
-    return Optional.ofNullable(users.get(id));
+    return Future.succeededFuture(Optional.ofNullable(users.get(id)));
   }
 
   @Override
-  public void update(User user) {
+  public Future<Void> update(User user) {
     if (user == null) {
-      throw new IllegalArgumentException("User cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("User cannot be null"));
     }
     users.put(user.getId(), user);
+    return Future.succeededFuture();
   }
 
   @Override
-  public void delete(UUID id) {
+  public Future<Void> delete(UUID id) {
     if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("ID cannot be null"));
     }
     users.remove(id);
+    return Future.succeededFuture();
   }
 
   @Override
-  public Optional<User> findByEmail(String email) {
+  public Future<Optional<User>> findByEmail(String email) {
     if (email == null) {
-      throw new IllegalArgumentException("Email cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("Email cannot be null"));
     }
-    return users.values().stream()
-        .filter(user -> user.getEmail().equals(email))
+    var user = users.values().stream()
+        .filter(u -> u.getEmail().equals(email))
         .findFirst();
+
+    return Future.succeededFuture(user);
   }
 }

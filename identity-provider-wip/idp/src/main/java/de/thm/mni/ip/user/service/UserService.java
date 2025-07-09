@@ -1,9 +1,9 @@
 package de.thm.mni.ip.user.service;
 
-
 import de.thm.mni.ip.user.db.UserDB;
 import de.thm.mni.ip.user.model.User;
 import de.thm.mni.ip.util.security.PasswordEncoder;
+import io.vertx.core.Future;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +33,9 @@ public class UserService {
    * @param user The user to create.
    * @throws IllegalArgumentException if the user is null.
    */
-  public void create(User user) {
+  public Future<Void> create(User user) {
     if (user == null) {
-      throw new IllegalArgumentException("User cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("User cannot be null"));
     }
 
     var userWithHashedPassword = new User(
@@ -46,7 +46,7 @@ public class UserService {
       user.getLastName()
     );
 
-    userDB.create(userWithHashedPassword);
+    return userDB.create(userWithHashedPassword);
   }
 
   /**
@@ -56,9 +56,9 @@ public class UserService {
    * @return An Optional containing the user if found, or empty if not found.
    * @throws IllegalArgumentException if the ID is null.
    */
-  public Optional<User> getById(UUID id) {
+  public Future<Optional<User>> getById(UUID id) {
     if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("ID cannot be null"));
     }
     return userDB.find(id);
   }
@@ -68,7 +68,7 @@ public class UserService {
    *
    * @return A list of all users.
    */
-  public List<User> getAll() {
+  public Future<List<User>> getAll() {
     return userDB.getAll();
   }
 
@@ -78,11 +78,11 @@ public class UserService {
    * @param user The user to update.
    * @throws IllegalArgumentException if the user is null.
    */
-  public void update(User user) {
+  public Future<Void> update(User user) {
     if (user == null) {
-      throw new IllegalArgumentException("User cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("User cannot be null"));
     }
-    userDB.update(user);
+    return userDB.update(user);
   }
 
   /**
@@ -91,10 +91,10 @@ public class UserService {
    * @param userId The ID of the user to delete.
    * @throws IllegalArgumentException if the userId is null.
    */
-  public void deleteById(UUID userId) {
+  public Future<Void> deleteById(UUID userId) {
     if (userId == null) {
-      throw new IllegalArgumentException("User ID cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("ID cannot be null"));
     }
-    userDB.delete(userId);
+    return userDB.delete(userId);
   }
 }

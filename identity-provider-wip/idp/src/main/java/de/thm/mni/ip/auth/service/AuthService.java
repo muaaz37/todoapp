@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import de.thm.mni.ip.util.security.PasswordEncoder;
+import io.vertx.core.Future;
 
 /**
  * Service for user authentication.
@@ -42,19 +43,22 @@ public class AuthService {
    * @throws NoSuchElementException if the user is not found.
    * @throws InvalidCredentialsException if the password is invalid.
    */
-  public User authenticate(String email, String password) {
-    var searchResult = userDB.findByEmail(email);
-    if (searchResult.isEmpty()) {
-      throw new NoSuchElementException("User not found");
-    }
+  public Future<User> authenticate(String email, String password) {
+    return userDB.findByEmail(email)
+      .map(searchResult -> {
+          if (searchResult.isEmpty()) {
+            throw new NoSuchElementException("User not found");
+          }
 
-    var user = searchResult.get();
+          var user = searchResult.get();
 
-    if (PasswordEncoder.matches(password, user.getPassword())) {
-      return user;
-    }
+          if (PasswordEncoder.matches(password, user.getPassword())) {
+            return user;
+          }
 
-    throw new InvalidCredentialsException("Invalid password");
+          throw new InvalidCredentialsException("Invalid password");
+        }
+      );
   }
 
   /**
@@ -65,9 +69,9 @@ public class AuthService {
    *
    * @throws IllegalArgumentException if the ID is null.
    */
-  public Optional<User> getById(UUID id) {
+  public Future<Optional<User>> getById(UUID id) {
     if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
+      return Future.failedFuture(new IllegalArgumentException("ID cannot be null"));
     }
     return userDB.find(id);
   }

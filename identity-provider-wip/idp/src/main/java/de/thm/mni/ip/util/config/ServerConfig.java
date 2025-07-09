@@ -15,6 +15,7 @@ public record ServerConfig(
   String host,
   int port,
   CorsConfig cors,
-  RSAKeyPair rsaKeyPair
+  RSAKeyPair rsaKeyPair,
+  DatabaseConfig databaseConfig
 ) {
 }

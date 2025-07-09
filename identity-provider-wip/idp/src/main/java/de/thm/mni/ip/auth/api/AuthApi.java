@@ -1,13 +1,18 @@
 package de.thm.mni.ip.auth.api;
 
+import de.thm.mni.ip.Start;
 import de.thm.mni.ip.auth.api.dto.LoginRequest;
 import de.thm.mni.ip.auth.api.dto.TokenResponse;
 import de.thm.mni.ip.auth.service.AuthService;
 import de.thm.mni.ip.auth.util.TokenHandler;
 import de.thm.mni.ip.user.api.dto.UserResponse;
+import io.vertx.core.Future;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.NoSuchElementException;
 
 /**
@@ -15,6 +20,8 @@ import java.util.NoSuchElementException;
  * It handles login requests and verifies user tokens.
  */
 public class AuthApi {
+
+  private static final Logger LOGGER = LogManager.getLogger(AuthApi.class);
 
   private final AuthService authService;
   private final TokenHandler tokenHandler;
@@ -28,8 +35,8 @@ public class AuthApi {
    * @param tokenHandler the handler for creating and verifying tokens
    */
   public AuthApi(
-          AuthService authService,
-          TokenHandler tokenHandler
+    AuthService authService,
+    TokenHandler tokenHandler
   ) {
     if (authService == null) {
       throw new IllegalArgumentException("AuthService cannot be null");
@@ -64,28 +71,37 @@ public class AuthApi {
 
     try {
       var userId = tokenHandler.verify(token);
-      var userOptional = authService.getById(userId);
 
-      if (userOptional.isEmpty()) {
-        unauthorized(rc);
-        return;
-      }
-
-      var user = userOptional.get();
-
-      var userResponse = new UserResponse(
-              user.getId(),
-              user.getEmail(),
-              user.getFirstName(),
-              user.getLastName()
-      );
-
-      rc.response()
+      authService.getById(userId)
+        .map(userOptional -> {
+          if (userOptional.isEmpty()) {
+            throw new NoSuchElementException("User not found");
+          }
+          return userOptional.get();
+        })
+        .map(user -> {
+          return new UserResponse(
+            user.getId(),
+            user.getEmail(),
+            user.getFirstName(),
+            user.getLastName()
+          );
+        })
+        .onSuccess(userResponse -> {
+            rc.response()
               .setStatusCode(200)
               .putHeader("Content-Type", "application/json")
               .end(Json.encode(userResponse));
-    } catch (IllegalArgumentException e) {
-      unauthorized(rc);
+        })
+        .onFailure(throwable -> {
+          LOGGER.error("Failed to verify token: {}", throwable.getMessage());
+          unauthorized(rc);
+        });
+    } catch (Exception e) {
+      LOGGER.error("Token verification failed: {}", e.getMessage());
+      rc.response()
+        .setStatusCode(500)
+        .end("Internal Server Error");
     }
   }
 
@@ -93,29 +109,33 @@ public class AuthApi {
     var loginData = rc.body().asPojo(LoginRequest.class);
 
     try {
-      var user = authService.authenticate(
-              loginData.email(),
-              loginData.password()
-      );
-
-      var token = tokenHandler.create(user);
-
-      rc.response()
-              .setStatusCode(200)
-              .putHeader("Content-Type", "application/json")
-              .end(Json.encode(new TokenResponse(
-                      token,
-                      TOKEN_TYPE_BEARER
-              )));
-
-    } catch (IllegalArgumentException | NoSuchElementException e) {
+      authService.authenticate(
+        loginData.email(),
+        loginData.password()
+      )
+      .map(tokenHandler::create)
+        .onSuccess(token -> {
+          rc.response()
+            .setStatusCode(200)
+            .putHeader("Content-Type", "application/json")
+            .end(Json.encode(new TokenResponse(
+              token,
+              TOKEN_TYPE_BEARER
+            )));
+        })
+        .onFailure(failure -> {
+          LOGGER.error("Authentication failed: {}", failure.getMessage());
+            unauthorized(rc);
+        });
+    } catch (IllegalArgumentException ex) {
+      LOGGER.error("Invalid login request: {}", ex.getMessage());
       unauthorized(rc);
     }
   }
 
   private void unauthorized(RoutingContext rc) {
     rc.response()
-            .setStatusCode(401)
-            .end("Unauthorized");
+      .setStatusCode(401)
+      .end("Unauthorized");
   }
 }

@@ -1,6 +1,7 @@
 package de.thm.mni.ip.user.db;
 
 import de.thm.mni.ip.user.model.User;
+import io.vertx.core.Future;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public interface UserDB {
    * @param user The user to create.
    * @throws IllegalArgumentException if the user is null.
    */
-  void create(User user);
+  Future<Void> create(User user);
 
   /**
    * Finds a user by their ID.
@@ -27,14 +28,14 @@ public interface UserDB {
    * @return An Optional containing the user if found, or empty if not found.
    * @throws IllegalArgumentException if the ID is null.
    */
-  Optional<User> find(UUID id);
+  Future<Optional<User>> find(UUID id);
 
   /**
    * Retrieves all users from the database.
    *
    * @return A list of all users.
    */
-  List<User> getAll();
+  Future<List<User>> getAll();
 
   /**
    * Updates an existing user in the database.
@@ -42,7 +43,7 @@ public interface UserDB {
    * @param user The user to update.
    * @throws IllegalArgumentException if the user is null.
    */
-  void update(User user);
+  Future<Void> update(User user);
 
   /**
    * Deletes a user by their ID.
@@ -50,7 +51,7 @@ public interface UserDB {
    * @param userId The ID of the user to delete.
    * @throws IllegalArgumentException if the userId is null.
    */
-  void delete(UUID userId);
+  Future<Void> delete(UUID userId);
 
   /**
    * Finds a user by their email address.
@@ -58,7 +59,7 @@ public interface UserDB {
    * @param email The email address of the user to find.
    * @return An Optional containing the user if found, or empty if not found.
    */
-  Optional<User> findByEmail(String email);
+  Future<Optional<User>> findByEmail(String email);
 
   /**
    * Deletes a user by their User object.
@@ -66,7 +67,7 @@ public interface UserDB {
    * @param user The user to delete.
    * @throws IllegalArgumentException if the user is null.
    */
-  default void delete(User user) {
-    delete(user.getId());
+  default Future<Void> delete(User user) {
+    return delete(user.getId());
   }
 }

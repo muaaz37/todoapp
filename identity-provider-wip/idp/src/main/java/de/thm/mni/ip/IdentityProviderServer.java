@@ -4,7 +4,7 @@ import de.thm.mni.ip.auth.api.AuthApi;
 import de.thm.mni.ip.auth.service.AuthService;
 import de.thm.mni.ip.auth.util.TokenHandler;
 import de.thm.mni.ip.user.api.UserApi;
-import de.thm.mni.ip.user.db.UserMockDB;
+import de.thm.mni.ip.user.db.UserSQLDB;
 import de.thm.mni.ip.user.service.UserService;
 import de.thm.mni.ip.util.config.ServerConfig;
 import io.vertx.core.Vertx;
@@ -16,6 +16,10 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.JWTAuthHandler;
+import io.vertx.jdbcclient.JDBCConnectOptions;
+import io.vertx.jdbcclient.JDBCPool;
+import io.vertx.sqlclient.Pool;
+import io.vertx.sqlclient.PoolOptions;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -34,9 +38,6 @@ public class IdentityProviderServer {
     Vertx vertx = Vertx.vertx();
 
     Router router = Router.router(vertx);
-
-    // body handler
-    router.route().handler(BodyHandler.create());
 
     // Cors
     router.route().handler(
@@ -57,9 +58,23 @@ public class IdentityProviderServer {
       )
     );
 
+    // body handler
+    router.route().handler(BodyHandler.create());
+
+    // jdbc connection pool
+    Pool pool = JDBCPool.pool(
+      vertx,
+      new JDBCConnectOptions()
+        .setJdbcUrl(config.databaseConfig().jdbcUrl())
+        .setUser(config.databaseConfig().username())
+        .setPassword(config.databaseConfig().password()),
+      new PoolOptions()
+        .setMaxSize(16) // Set the maximum number of connections in the pool
+        .setIdleTimeout(300) // Set the idle timeout for connections
+    );
 
     // User api
-    var userDb = new UserMockDB();
+    var userDb = new UserSQLDB(pool);
     var userService = new UserService(userDb);
     var userApi = new UserApi(userService);
     userApi.appendRouting(router, API_BASE_PATH);
