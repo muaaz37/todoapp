@@ -1,6 +1,7 @@
 package de.thm.mni.ip.user.db;
 
 import de.thm.mni.ip.user.model.User;
+import de.thm.mni.ip.util.EnvironmentVariableReader;
 import io.vertx.core.Vertx;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -13,9 +14,10 @@ import java.util.UUID;
 
 public class TestDBOperations {
 
-    private static final String URL="jdbc:postgresql://localhost:8999/idp";
-    private static final String USERNAME="username";
-    private static final String PASSWORD="password";
+    private static final String URL= EnvironmentVariableReader.get("DB_JDBC_STRING", "jdbc:postgresql://localhost:8999/idp");
+    private static final String USERNAME= EnvironmentVariableReader.get("DB_USER", "username");
+    private static final String PASSWORD= EnvironmentVariableReader.get("DB_PASSWORD", "password");
+
 
 
     public static void main(String[] args) {
@@ -25,7 +27,7 @@ public class TestDBOperations {
         var sqlUserDb = new UserSQLDB(dbPool);
         testGetAll(sqlUserDb);
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "email", "password", "First", "Last");
+        User user = new User(userId, "ali123@gmail.com", "test123", "ali", "ahmed");
         Future<UUID> id = testCreate(sqlUserDb,user);
 
     }

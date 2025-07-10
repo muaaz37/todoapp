@@ -62,7 +62,7 @@ public class IdentityProviderServer {
     router.route().handler(BodyHandler.create());
 
     // jdbc connection pool
-    Pool pool = JDBCPool.pool(
+    Pool pool = JDBCPool.pool( // Create a connection pool for the database
       vertx,
       new JDBCConnectOptions()
         .setJdbcUrl(config.databaseConfig().jdbcUrl())
@@ -74,7 +74,7 @@ public class IdentityProviderServer {
     );
 
     // User api
-    var userDb = new UserSQLDB(pool);
+    var userDb = new UserSQLDB(pool); // Create an instance of UserSQLDB with the connection pool
     var userService = new UserService(userDb);
     var userApi = new UserApi(userService);
     userApi.appendRouting(router, API_BASE_PATH);
