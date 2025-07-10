@@ -53,6 +53,7 @@ services:
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
+      DB_JDBC_STRING: jdbc:postgresql://localhost:8999/idp
     ports:
       - "8999:5432"
     volumes:
