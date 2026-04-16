@@ -1,0 +1,85 @@
+services:
+  todo-app-server:
+    build:
+      context: ./server_api
+      dockerfile: Dockerfile
+    environment:
+      - HOST=0.0.0.0
+      - DB_FILE_PATH=/app/data/db.json
+    ports:
+      - "8081:8080"
+    depends_on:
+      - todo_database
+    volumes:
+      - todo-data:/app/data
+      - ./server_api/keys/:/app/keys:ro
+    restart: always
+
+  echo-service-api:
+    build:
+      context: ../echo-server
+      dockerfile: Dockerfile_Echo
+    ports:
+      - "8088:8888"
+    restart: always
+
+  todo-client-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile_Nginx
+    ports:
+      - "8080:80"
+
+  identity-provider:
+    build:
+      context: ../identity-provider-wip
+      dockerfile: idp/Dockerfile
+    ports:
+      - "8090:8080"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - CORS_ORIGIN=http://localhost:8080,http://localhost:8081
+      - DB_HOST=todo_postgres
+      - DB_PORT=5432
+      - DB_USER=username
+      - DB_PASSWORD=password
+    depends_on:
+      - todo_postgres
+    restart: always
+
+  todo_postgres:
+    image: postgres:17-alpine3.22
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      DB_JDBC_STRING: jdbc:postgresql://localhost:8999/idp
+    ports:
+      - "8999:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../identity-provider-wip/idp/init/initial_schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: always
+
+  todo_database:
+    image: mariadb:latest
+    environment:
+       MARIADB_ROOT_PASSWORD: geheim
+       MARIADB_DATABASE: todo
+       MARIADB_USER: username
+       MARIADB_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - todo_db_data:/var/lib/mysql
+      - ./server_api/src/init:/docker-entrypoint-initdb.d
+  adminer:
+    image: adminer
+    ports:
+    - "8083:8080"
+
+volumes:
+  todo-data:
+  todo_db_data:
+  postgres_data:
+#username:root, password: geheim

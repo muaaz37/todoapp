@@ -1,9 +1,0 @@
-{
-  "name": "todo-app",
-  "private": true,
-  "scripts": {
-    "install": "npm ci --prefix client_app && npm ci --prefix server_api",
-    "build": "npm run build --prefix client_app && npm run build --prefix server_api",
-    "start": "npm run start --prefix server_api"
-  }
-}

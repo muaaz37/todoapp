@@ -14,6 +14,7 @@ Before building and running the project, ensure you have the following installed
 
 - [Node.js](https://nodejs.org/) (version 16 or higher recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Docker](https://www.docker.com/) (for running the containerized version)
 
 ## Installation
 
@@ -46,3 +47,51 @@ npm start
 
 This will launch the application on `http://localhost:8080` by default.
 
+## NPM Scripts
+The following NPM scripts are available:
+
+Create a production-ready build for both client and server:
+```bash
+npm run build:prod
+```
+
+Build the Docker image for the application:
+```bash
+npm run build:docker
+```
+
+Start the application in a Docker container
+```bash
+npm run start:docker
+```
+
+Build the Docker image and start the application with Docker Compose for the first time:
+```bash
+npm run firststart:compose
+```
+
+Start the application with Docker Compose (after the initial build):
+```bash
+npm run start:compose
+```
+
+Stop the Docker Compose services:
+```bash
+npm run stop:compose
+```
+
+## Build and Start with Docker Compose
+1. Install dependencies with `npm run install`.
+2. Build the production version with `npm run build:prod`.
+3. Start the application using Docker Compose:
+```bash
+  npm run firststart:compose
+```
+Or, if the application is already built, start it with:
+```bash
+  npm run start:compose
+```
+4. To stop the application:
+```bash
+  npm run stop:compose
+```
