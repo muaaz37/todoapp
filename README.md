@@ -26,7 +26,7 @@ Before building and running the project, ensure you have the following installed
 
 2. Create your local environment file:
    ```bash
-   cp .env.example .env
+   npm run setup
    ```
 
 3. Set strong values in `.env` for:
@@ -63,6 +63,11 @@ For the full application stack (client, idp, databases), use Docker Compose.
 ## NPM Scripts
 The following NPM scripts are available:
 
+Create a local `.env` from `.env.example` (does not overwrite existing `.env`):
+```bash
+npm run setup
+```
+
 Create a production-ready build for both client and server:
 ```bash
 npm run build:prod
@@ -94,7 +99,7 @@ npm run stop:compose
 ```
 
 ## Build and Start with Docker Compose
-1. Ensure `.env` exists and contains your local credentials (`cp .env.example .env`).
+1. Ensure `.env` exists and contains your local credentials (`npm run setup`).
 2. Install dependencies with `npm run install`.
 3. Build the production version with `npm run build:prod`.
 4. Start the application using Docker Compose:
