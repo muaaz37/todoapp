@@ -127,8 +127,8 @@ public class AuthApi {
           LOGGER.error("Authentication failed: {}", failure.getMessage());
             unauthorized(rc);
         });
-    } catch (IllegalArgumentException ex) {
-      LOGGER.error("Invalid login request: {}", ex.getMessage());
+    } catch (Exception ex) {
+      LOGGER.error("Authentication request failed: {}", ex.getMessage());
       unauthorized(rc);
     }
   }
