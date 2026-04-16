@@ -1,0 +1,13 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+client_app/node_modules/
+server_api/node_modules/
+
+# Build outputs
+client_app/build/
+server_api/build/
