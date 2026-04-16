@@ -20,13 +20,25 @@ Before building and running the project, ensure you have the following installed
 
 1. Clone the repository:
    ```bash
-   git clone git@git.thm.de:praktische-informatik-2-ss25/to-do-app.git
-   cd to-do-app
+   git clone <your-repo-url>
+   cd <repo-root>/to-do-app
    ```
 
-2. Install dependencies:
+2. Create your local environment file:
    ```bash
-   npm install
+   cp .env.example .env
+   ```
+
+3. Set strong values in `.env` for:
+   - `IDP_DB_USER`
+   - `IDP_DB_PASSWORD`
+   - `TODO_DB_USER`
+   - `TODO_DB_PASSWORD`
+   - `TODO_DB_ROOT_PASSWORD`
+
+4. Install dependencies:
+   ```bash
+   npm run install
    ```
 
 ## Build
@@ -45,7 +57,8 @@ To start the project, run:
 npm start
 ```
 
-This will launch the application on `http://localhost:8080` by default.
+This starts only the `server_api` service (default: `http://localhost:8080`).
+For the full application stack (client, idp, databases), use Docker Compose.
 
 ## NPM Scripts
 The following NPM scripts are available:
@@ -81,9 +94,10 @@ npm run stop:compose
 ```
 
 ## Build and Start with Docker Compose
-1. Install dependencies with `npm run install`.
-2. Build the production version with `npm run build:prod`.
-3. Start the application using Docker Compose:
+1. Ensure `.env` exists and contains your local credentials (`cp .env.example .env`).
+2. Install dependencies with `npm run install`.
+3. Build the production version with `npm run build:prod`.
+4. Start the application using Docker Compose:
 ```bash
   npm run firststart:compose
 ```
@@ -91,7 +105,38 @@ Or, if the application is already built, start it with:
 ```bash
   npm run start:compose
 ```
-4. To stop the application:
+5. To stop the application:
 ```bash
   npm run stop:compose
 ```
+
+## Service Ports (Docker Compose defaults)
+- `todo-client-nginx`: `http://localhost:8080`
+- `todo-app-server`: `http://localhost:8081`
+- `echo-service-api`: `http://localhost:8088`
+- `identity-provider`: `http://localhost:8090`
+- `adminer`: `http://localhost:8083`
+- `todo_postgres`: `localhost:8999 -> 5432`
+- `todo_database` (MariaDB): `localhost:3307 -> 3306`
+
+## Login Test User (verified)
+After starting with Docker Compose, open:
+- `http://localhost:8080`
+or directly:
+- `http://localhost:8080/authForm.html`
+
+Use this seeded user (from `identity-provider-wip/idp/init/initial_schema.sql`):
+- Email: `max.mustermann@mni.thm.de`
+- Password: `password`
+
+## Troubleshooting
+If login fails after you changed DB credentials in `.env`, your old database volume may still contain the previous user/password.
+Re-initialize once with:
+
+```bash
+npm run stop:compose
+docker compose down -v
+npm run start:compose
+```
+
+This removes local Docker volumes for this stack.
